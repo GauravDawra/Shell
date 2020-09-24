@@ -1,4 +1,4 @@
-all: ./bin/ls ./bin/date ./bin/rm
+all: ./bin/ls ./bin/date ./bin/rm ./bin/mkdir
 
 ./bin/ls: ./src/ls.c
 	gcc ./src/ls.c -o ./bin/ls
@@ -8,3 +8,6 @@ all: ./bin/ls ./bin/date ./bin/rm
 
 ./bin/rm: ./src/rm.c
 	gcc ./src/rm.c -o ./bin/rm
+
+./bin/mkdir: ./src/mkdir.c
+	gcc ./src/mkdir.c -o ./bin/mkdir

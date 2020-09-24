@@ -25,4 +25,5 @@
     1. `-d [file/directory name]`: This flag is used to allow removal of directories as well. You can pass either a directory or a file if you use this flag.
     2. `-i [filename]`: This flag asks for permission before deleting the specified file. Write `yes` if you want to proceed with deletion or `no` if you don't want to delete it.
 
-    
+- # `mkdir [directoryname]`: an external command
+    Makes a new directory in the directory specified.
