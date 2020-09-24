@@ -17,4 +17,12 @@
     Has the following command line options:
     1. `-r [filename]`: This flag is used to determine the last modified date and time of the specified file. Note that that time type in this case will be IST by default.
     2. `-u`: This flag is used to view the date in Universal Time Coordinated (UTC). This can be used with the above `-r [filename]` flag.
+
+- # `rm [filename]`: an external command
+    Removes the file if present in the current working directory. Note that the removal takes place only if the parameter passed is a file. To delete directories, see options below. You cannot delete `.` and `..` files. Trying to delete them will throw an error. If the file is not found in the directory, or it could not be deleted due to some other reasons, the console will prompt: "The file/directory is not deleted". Note that this command can take only one argument at a time.
+
+    Has the following options:
+    1. `-d [file/directory name]`: This flag is used to allow removal of directories as well. You can pass either a directory or a file if you use this flag.
+    2. `-i [filename]`: This flag asks for permission before deleting the specified file. Write `yes` if you want to proceed with deletion or `no` if you don't want to delete it.
+
     
