@@ -14,6 +14,15 @@ int is_regular_file(const char *path)
     return S_ISREG(path_stat.st_mode);
 }
 
+int cfileexists(const char* filename){
+    struct stat buffer;
+    int exist = stat(filename,&buffer);
+    if(exist == 0)
+        return 1;
+    else // -1
+        return 0;
+}
+
 int main(int argc, char* argv[]){
     // int del = remove("/Users/gaurav/C++Projects/OS_Assignment1/Excercies2/src/test.txt");
     
@@ -27,6 +36,11 @@ int main(int argc, char* argv[]){
         return 0;
     }
     
+    if(cfileexists(argv[argc-1]) == 0){
+        printf("rm: file/directory does not exist\n");
+        return 0;
+    }
+
     if(!DIRECTORY_REMOVE && is_regular_file(argv[argc - 1]) == 0){
         printf("rm: the inputted parameter is a directory\n");
         return 0;

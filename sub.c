@@ -9,6 +9,15 @@
 //     return S_ISREG(path_stat.st_mode);
 // }
 
+int cfileexists(const char* filename){
+    struct stat buffer;
+    int exist = stat(filename,&buffer);
+    if(exist == 0)
+        return 1;
+    else // -1
+        return 0;
+}
+
 int main(int argc, char* argv[]){
     // for(int i=0;i<argc;i++)
     //     printf("%s", argv[i]);
@@ -18,6 +27,11 @@ int main(int argc, char* argv[]){
     // char *args[] = {"-A", arg2};
     // printf("%02d", 2);
     // printf("%d", is_regular_file(arg2));
-    execl(binaryPath, binaryPath,"hi", NULL);
+
+    struct stat buffer;
+    int exist = stat("src",&buffer);
+
+    printf("%d", exist);
+    // execl(binaryPath, binaryPath,"hi", NULL);
     return 0;
 }
