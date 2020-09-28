@@ -45,14 +45,19 @@ void init(){
     for(int i=0;i<MAX_HISTORY_LENGTH;i++){
         history_buffer[i] = "\0";
     }
-
-    for(int i=0;i<MAX_TOKENS;i++){
-        input_buffer[i] = (char*) malloc(MAX_TOKEN_SIZE * (sizeof(char)));
+    for(int i=0;i<MAX_HISTORY_LENGTH;i++){
+        history_buffer[i] = (char*)malloc(MAX_COMMAND_LENGTH * sizeof(char));
     }
+    // for(int i=0;i<MAX_TOKENS;i++){
+    //     input_buffer[i] = (char*) malloc(MAX_TOKEN_SIZE * (sizeof(char)));
+    // }
 
 }
 
 void _close(){
+    for(int i=0;i<MAX_HISTORY_LENGTH;i++){
+        free(history_buffer[i]);
+    }
     // for(int i=0;i<MAX_TOKENS;i++)
     //     free(input_buffer[i]);
 }
@@ -81,12 +86,10 @@ void _cd(char* dir){
     new_dir[ptr++] = '\0';
     // printf("%s", new_dir);
     if(isDirectory(new_dir)){
-        // dir_name = new_dir;
         strcpy(dir_name, new_dir);
         return;
     }
     else if(isDirectory(dir)){
-        // dir_name = dir;
         strcpy(dir_name, dir);
         return;
     }
@@ -122,7 +125,6 @@ void _exit_0(){
     exit(0);
 }
 
-// extern "C" tokenize()
 
 int tokenize(char *str, char *buff[MAX_TOKENS]){
     // token
@@ -160,17 +162,12 @@ int tokenize2(char str[MAX_COMMAND_LENGTH], char **buff){
 }
 
 int input(){
-    // char str[MAX_COMMAND_LENGTH];
+    printf("%s$ ", dir_name);
     gets(command);
     int cnt = tokenize(command, input_buffer);
-    // printf("%s", input_buffer[0]);
     for(int i=cnt;i<MAX_TOKENS;i++){
-        // strcpy(input_buffer[i], '\0');
         input_buffer[i] = NULL;
-        // free()
     }
-    for(int i=0;i<10;i++) printf(" x%sx ", input_buffer[i]);
-    printf("\nThis is the command: %s %d \n", input_buffer[0], cnt);
     return input_cnt = cnt;
 }
 
@@ -191,6 +188,7 @@ void handle_internal_command(){
         _history();
     }
 }
+
 void handle_external_command(){
 
     pid_t pid = fork();
@@ -199,7 +197,6 @@ void handle_external_command(){
         return;
     }
     
-    printf("XXXXXXXXXX");
     if(pid == 0){
         if(strcmp(input_buffer[0], "date") == 0){
             char path[MAX_PATH_LENGTH];
@@ -207,7 +204,6 @@ void handle_external_command(){
             strcat(path, "/bin/date");
             execv(path, input_buffer);
             printf("date: Error occurred\n");
-            // return;
             exit(0);
         }
         if(strcmp(input_buffer[0], "ls") == 0){ // to be corrected
@@ -218,18 +214,11 @@ void handle_external_command(){
             execv(path, input_buffer);
             printf("ls: Error occurred\n");
             exit(0);
-            // return;
         }
         if(strcmp(input_buffer[0], "mkdir") == 0){
-            // printf("mkdiryoyo");
             char path[MAX_PATH_LENGTH];
             strcpy(path, base_dir);
             strcat(path, "/bin/mkdir");
-            // input_buffer[input_cnt]="";
-            // strcpy(input_buffer[input_cnt], dir_name);
-            // strcat(input_buffer[input_cnt-1], dir_name);
-
-            // printf("%s", input_buffer[input_cnt-1]);
             execv(path, input_buffer);
             printf("mkdir: Error occurred\n");
             exit(0);
@@ -250,7 +239,7 @@ void handle_external_command(){
             printf("cat: Error occurred");
             exit(0);
         }
-        printf("end");
+        printf("Command not found\n");
         exit(0);
     }
     else if(pid > 0){
@@ -258,7 +247,7 @@ void handle_external_command(){
     }
 }
 void process_command(){
-    strcmp(history_buffer[history_ptr] ,command);
+    strcpy(history_buffer[history_ptr], command);
     history_ptr = (history_ptr+1)%MAX_HISTORY_LENGTH;
     
     if(strcmp(input_buffer[0], "cd") == 0 || 
@@ -271,30 +260,14 @@ void process_command(){
     else{
         handle_external_command();
     }
-    // if(strcmp(input_buffer[0], "ls") == 0)
-        // execv("./bin/ls", input_buffer);
-    // // else if()
-    // printf()
-    // printf("done");
 }
 
 int main(){
 
     init();
-    // input();
-    // char* c = "NULL";
-    // printf("%d",sizeof(input_buffer[0]));
-    // strcpy(c, "uo");
-    // printf("%s", c);
-    // printf("%s", history_buffer[0]);
-    // char s[100]; 
-    // printf("%s", getcwd(s, 100));
     while(1){
         int cnt = input();
-        // for(int i=0;i<input_cnt;i++) printf("%s", input_buffer[i]);
         process_command();
-        // printf("%s\n", base_dir);
-        
     }
     
     _close();

@@ -17,3 +17,6 @@ all: ./bin/ls ./bin/cat ./bin/date ./bin/rm ./bin/mkdir source
 
 source: source.c
 	gcc source.c -o source
+
+run:
+	./source

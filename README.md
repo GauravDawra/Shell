@@ -34,4 +34,4 @@
     2. `-i [filename]`: This flag asks for permission before deleting the specified file. Write `yes` if you want to proceed with deletion or `no` if you don't want to delete it.
 
 - # `mkdir [directoryname]`: an external command
-    Makes a new directory in the directory specified.
+    Makes a new directory in the directory specified. The [directoryname] is the name of the directory to be created.
