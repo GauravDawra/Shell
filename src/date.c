@@ -44,8 +44,5 @@ int main(int argc, char* argv[])
         printf("%s %s %d %02d:%02d:%02d %s %d\n", day[TM.tm_wday], month[TM.tm_mon], TM.tm_mday, TM.tm_hour, TM.tm_min, TM.tm_sec, TIME_TYPE, 1900+TM.tm_year);
     }
 
-	return 0;
-
-
     return 0;
 }
