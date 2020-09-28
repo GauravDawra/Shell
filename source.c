@@ -279,7 +279,7 @@ void process_command(){
 }
 
 int main(){
-    
+
     init();
     // input();
     // char* c = "NULL";
@@ -293,7 +293,7 @@ int main(){
         int cnt = input();
         // for(int i=0;i<input_cnt;i++) printf("%s", input_buffer[i]);
         process_command();
-        printf("%s\n", base_dir);
+        // printf("%s\n", base_dir);
         
     }
     
