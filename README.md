@@ -8,6 +8,13 @@
     1. `-a`: This flag is used to view the hidden files in the      directory specified.
     2. `-A`: This flag is used to view all the files in the directory specified(including the hidden files), except '.' and '..'.
 
+- # `cat [filename]`: an external command
+    Outputs the contents of a file to the console. [filename] is the name of the file whose contents are to be viewed. Note that [filename] should either be a valid file in the present working directory, or it must be a valid absolute path. If none of these satisfied, the error message `no such file` is displayed. If the file cannot be opened due to some other reasons, the error `File could not be opened` is displayed.
+
+    Has the following command line options:
+    1. `-n [filename]`: This modifies the output so that the number of the respective line is also printed along with the lines of the file. The numbering starts from 1. Note that this flag numbers the blank lines as well(see `-e` option below).
+    2. `-e [filename]`: This modifies the output so the non-blank lines in the file are numbered in the output. To number the blank lines as well, see `-n` option above.
+
 - # `date`: an external command
     Prints the date and time to the console. By default, the command outputs the date and time according to the Indian Standard Time (IST). To change the date and time to UTC, see options below. The format of the output is `[day] [month] [date] [hours]:[minutes]:[seconds] [time_type] [year]`.
     - `[hours]` are printed in 24 hour clock. 
