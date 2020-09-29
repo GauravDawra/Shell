@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include<stdlib.h>
 // int is_regular_file(const char *path)
 // {
 //     struct stat path_stat;
@@ -40,8 +41,27 @@ int main(int argc, char* argv[]){
     // input_buffer[0] = "ls";
     // input_buffer[1] = dir_name;
     // input_buffer[2] = NULL;
-    char* args[] = {"/Users/gaurav/C++Projects/OS_Assignment1/Excercies2", NULL};
-    execv("./bin/ls", args);
-
+    // char* args[] = {"/Users/gaurav/C++Projects/OS_Assignment1/Excercies2", NULL};
+    // execv("./bin/ls", args);
+    // char buf[1024];
+    // char* res = realpath("./src2/source.c", buf);
+    // printf("%s", buf);
+    // char* sl = "/Users/gaurav/C++Projects/OS_Assignment1/Excercies2/src2/dateC";
+    char original[100];
+    // if(readlink(sl,original, sizeof(original)) < 0)
+    //     printf("Error\n");
+    // else printf("%s", original);
+    // printf("%c %d\n", 'f', (int)'f');
+    // printf("%c %d\n", 'n', (int)'n');
+    // printf("%c %d\n", 'r', (int)'r');
+    // printf("%c %d\n", 't', (int)'t');
+    // printf("%c %d\n", 'v', (int)'v');
+    // printf("%c %d\n", '\\', (int)'\\');
+    // int res=mkdir("/Users/gaurav/C++Projects/OS_Assignment1/Excercies2", 0777);
+    // printf("%d", res);
+    // printf("%s", getenv("PWD"));
+    
+    realpath(".", original);
+    printf("%s\n", original);
     return 0;
 }

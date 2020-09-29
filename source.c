@@ -7,17 +7,19 @@
 #include <sys/wait.h>
 #include <unistd.h> 
 #include <dirent.h>
+#include <limits.h>
+#include <string.h>
 
-#include<string.h>
+const int MAX_HOST_SIZE = 128;
+const int MAX_USER_SIZE = 128;
+char host_name[MAX_HOST_SIZE];
+char user_name[MAX_USER_SIZE];
 
 const int MAX_PATH_LENGTH = 1024;
 DIR* dir_ptr;
 char dir_name[MAX_PATH_LENGTH];
+char *dir_name_symlinks;
 char base_dir[MAX_PATH_LENGTH];
-
-const int MAX_HISTORY_LENGTH = 500;
-char* history_buffer[MAX_HISTORY_LENGTH];
-int history_ptr = 0;
 
 
 /********** - INPUT HANDLING - **********/
@@ -33,31 +35,27 @@ int input_cnt = 0;
     still works.
 */
 
+const int MAX_HISTORY_LENGTH = 500;
+char history_buffer[MAX_HISTORY_LENGTH][MAX_COMMAND_LENGTH];
+int history_ptr = 0;
+
 
 void init(){
+    gethostname(host_name, MAX_HOST_SIZE);
+    getlogin_r(user_name, MAX_USER_SIZE);
     getcwd(base_dir, MAX_PATH_LENGTH);
     dir_ptr = opendir("/"); // open current directory;
-    // dir_name="/";
     chdir("/");
     getcwd(dir_name, MAX_PATH_LENGTH);
-    // strcpy(dir_name, "/");
-
-    for(int i=0;i<MAX_HISTORY_LENGTH;i++){
-        history_buffer[i] = "\0";
-    }
-    for(int i=0;i<MAX_HISTORY_LENGTH;i++){
-        history_buffer[i] = (char*)malloc(MAX_COMMAND_LENGTH * sizeof(char));
-    }
-    // for(int i=0;i<MAX_TOKENS;i++){
-    //     input_buffer[i] = (char*) malloc(MAX_TOKEN_SIZE * (sizeof(char)));
-    // }
-
+    // setenv("PWD", "/",1);
+    // dir_name_symlinks = getenv("PWD");
+    // strcpy(dir_name_symlinks, dir_name);
 }
 
 void _close(){
-    for(int i=0;i<MAX_HISTORY_LENGTH;i++){
-        free(history_buffer[i]);
-    }
+    // for(int i=0;i<MAX_HISTORY_LENGTH;i++){
+        // free(history_buffer[i]);
+    // }
     // for(int i=0;i<MAX_TOKENS;i++)
     //     free(input_buffer[i]);
 }
@@ -71,7 +69,6 @@ int is_regular_file(const char *path){
 int isDirectory(const char *path) {
    struct stat statbuf;
    if (stat(path, &statbuf) != 0){
-    //    printf("Doesn't exist");
        return 0;
     }
    return S_ISDIR(statbuf.st_mode);
@@ -98,30 +95,128 @@ void _cd(char* dir){
 
 void _cd_2(char* dir){
     int result = chdir(dir);
-    if(result != 0) printf("cd: no such directory\n");
+    if(result != 0) {printf("cd: no such directory\n"); return;}
     getcwd(dir_name, MAX_PATH_LENGTH);
+    // dir_name_symlinks = getenv("PWD");
+    // int slen = strlen(dir_name_symlinks);
+    // if(dir_name_symlinks[slen - 1] != '/') {
+    //     dir_name_symlinks[slen] = '/';
+    //     dir_name_symlinks[slen+1] = '\0';
+    // }
+    // strcat(dir_name_symlinks, dir);
 }
 
 void _pwd(){
+    // short GET_PHYSICAL_ADDRESS = 0;
+    // for(int i=0;i<input_cnt;i++){
+    //     if(strcmp(input_buffer[i], "-P") == 0) 
+    //         GET_PHYSICAL_ADDRESS = 1;
+    // }
+    // if(GET_PHYSICAL_ADDRESS) printf("%s\n", dir_name);
+    // else printf("%s\n", dir_name_symlinks);
     printf("%s\n", dir_name);
 }
 
 void _echo(char* str){
-    printf("%s\n", str);
+
+    short NO_NEW_LINE = 0;
+    short PARSE_ESCAPE_CHARACTERS = 0;
+    for(int i=0;i<input_cnt;i++){
+        if(strcmp(input_buffer[i], "-n") == 0) NO_NEW_LINE = 1;
+        if(strcmp(input_buffer[i], "-e") == 0) PARSE_ESCAPE_CHARACTERS = 1;
+    }
+
+    int len = strlen(str);
+    if(str[0] == '\"' && str[len-1] == '\"'){
+        str[len-1] = '\0';
+        str++;
+        len-=2;
+    }
+    else if(str[0] == '\'' && str[len-1] == '\''){
+        str[len-1] = '\0';
+        str++;
+        len-=2;
+    }
+    if(PARSE_ESCAPE_CHARACTERS){
+    // char sub_str[MAX_COMMAND_LENGTH];
+    // printf("hhoho");
+    char* sub_str = (char*)malloc(len*sizeof(char));
+    // sub_str
+    int ptr = 0;
+
+    char equi[128];
+    for(int i=0;i<128;i++) equi[i] = 0;
+    equi[110] = '\n';
+    equi[97] = '\a';
+    equi[101] = '\e';
+    equi[69] = '\E';
+    equi[102] = '\f';
+    equi[114] = '\r';
+    equi[116] = '\t';
+    equi[118] = '\v';
+    equi[92] = '\\';
+    
+    for(int i=0;i<=len;i++){
+        if(str[i] == '\\' && i!=len-1){
+            // if(i!=len-1){
+            // printf("%d,HIHI\n", i);
+            if(str[i+1] == 'c') {sub_str[ptr++] = '\0'; break;}
+            if(equi[str[i+1]] != 0) {sub_str[ptr++] = equi[str[i+1]];}
+            else sub_str[ptr++] = str[i+1]; 
+            i++;
+            // }
+        }
+        else sub_str[ptr++] = str[i];
+    }
+    printf("%s", sub_str);
+    if(!NO_NEW_LINE) printf("\n");
+    free(sub_str);
+    return;
+    }
+    printf("%s", str);
+    if(!NO_NEW_LINE) printf("\n");
+}
+
+void _clear_history(){
+    for(int i=0;i<MAX_HISTORY_LENGTH;i++)
+        strcpy(history_buffer[i], "\0");
 }
 
 void _history(){
+
+    short DELETE_AT_OFFSET = 0;
+    int offset = -1;
+    for(int i=0;i<input_cnt;i++){
+        if(strcmp(input_buffer[i], "-c") == 0){
+            _clear_history();
+            return;
+        }
+        if(strcmp(input_buffer[i], "-d") == 0){
+            DELETE_AT_OFFSET = 1;
+            offset = 0;
+            for(int j=0;input_buffer[i+1][j]!='\0';j++){
+                offset = 10*offset + (input_buffer[i+1][j]-'0');
+            }
+        }
+    }
+
     int nxt = (history_ptr+1)%MAX_HISTORY_LENGTH;
+    int cnt = 1;
     for(int i=0;i<MAX_HISTORY_LENGTH;i++){
         if(strcmp(history_buffer[nxt], "\0") == 0);
-        else printf("%s\n", history_buffer[nxt]);
+        else{
+        if(!DELETE_AT_OFFSET) printf("%d  %s\n", cnt, history_buffer[nxt]);
+        if(DELETE_AT_OFFSET && cnt == offset) strcpy(history_buffer[nxt], "\0");
+        cnt++;
+        }
+        
         nxt = (nxt+1)%MAX_HISTORY_LENGTH;
     }
 }
 
 void _exit_0(){
     _close();
-    printf("closing....\n");
+    printf("closing...\n");
     exit(0);
 }
 
@@ -162,7 +257,7 @@ int tokenize2(char str[MAX_COMMAND_LENGTH], char **buff){
 }
 
 int input(){
-    printf("%s$ ", dir_name);
+    printf("%s %s$ ", dir_name,  getenv("USER"));
     gets(command);
     int cnt = tokenize(command, input_buffer);
     for(int i=cnt;i<MAX_TOKENS;i++){
@@ -210,7 +305,8 @@ void handle_external_command(){
             char path[MAX_PATH_LENGTH];
             strcpy(path, base_dir);
             strcat(path, "/bin/ls");
-            input_buffer[input_cnt] = dir_name;
+            if(!isDirectory(input_buffer[input_cnt-1]))
+                input_buffer[input_cnt] = dir_name;
             execv(path, input_buffer);
             printf("ls: Error occurred\n");
             exit(0);
@@ -247,7 +343,12 @@ void handle_external_command(){
     }
 }
 void process_command(){
-    strcpy(history_buffer[history_ptr], command);
+    
+    strcpy(history_buffer[history_ptr], ""); // can be optimized
+    for(int i=0;i<input_cnt;i++){
+        strcat(history_buffer[history_ptr], input_buffer[i]);
+        strcat(history_buffer[history_ptr], " ");
+    }
     history_ptr = (history_ptr+1)%MAX_HISTORY_LENGTH;
     
     if(strcmp(input_buffer[0], "cd") == 0 || 
@@ -263,13 +364,12 @@ void process_command(){
 }
 
 int main(){
-
     init();
     while(1){
         int cnt = input();
         process_command();
     }
     
-    _close();
+    _close(); // will never execute
     return 0;
 }
