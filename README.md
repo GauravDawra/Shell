@@ -90,6 +90,13 @@ You are done!!! This will setup the project for you. To run the shell program, t
     Has the following command line options:
     1. `-P`: This is the only option available with this command. This resolves all the system links references in the path provided in the argument. Thus, the directory pointed to by our shell, after this command is executed, is the hard link of the directory we provided in the argument.
 
+- ### `history`: an internal command
+    This command reports the last 500 history of commands that have been given by the user. The commands are reported in seperate lines and are numbered starting from 1. Note that the latest 500 commands are reported. All the previous commands will be lost. Note that this command reports only those commands that were given to this instance of shell - since it was created. If the number of commands given to the shell is less than the 500, only those many commands will be reported. 
+
+    Has the following command line options:
+    1. `-c`: This command is used to clear all history of commands. All the stored commands will be erased from memory, and the numbering of new commands will start from 1 again. To clear particular commands from history, see `-d` option below.
+    2. `-d [offset]`: This command is used to clear the command at index `offset`, provided in the argument. The index of the commands can be determined by simply calling the `history` command. Note that indexing is 1-based.
+
 - ### `exit`: an internal command
     This command just exits the shell.
 
