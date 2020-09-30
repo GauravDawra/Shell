@@ -32,8 +32,8 @@ You are done!!! This will setup the project for you. To run the shell program, t
     Outputs the contents of a file to the console. [filename] is the name of the file whose contents are to be viewed. Note that [filename] should either be a valid file in the present working directory, or it must be a valid absolute path. If none of these satisfied, the error message `no such file` is displayed. If the file cannot be opened due to some other reasons, the error `File could not be opened` is displayed.
 
     Has the following command line options:
-    1. `-n [filename]`: This modifies the output so that the number of the respective line is also printed along with the lines of the file. The numbering starts from 1. Note that this flag numbers the blank lines as well(see `-e` option below).
-    2. `-e [filename]`: This modifies the output so the non-blank lines in the file are numbered in the output. To number the blank lines as well, see `-n` option above.
+    1. `-n [filename]`: This modifies the output so that the number of the respective line is also printed along with the lines of the file. The numbering starts from 1. Note that this flag numbers the blank lines as well(see `-b` option below).
+    2. `-b [filename]`: This modifies the output so the non-blank lines in the file are numbered in the output. To number the blank lines as well, see `-n` option above.
 
 - ### `rm [filename]`: an external command
     Removes the file if present in the current working directory. Note that the removal takes place only if the parameter passed is a file. To delete directories, see options below. You cannot delete `.` and `..` files. Trying to delete them will throw an error. If the file is not found in the directory, it will show "rm: the inputted parameter is a directory". 
