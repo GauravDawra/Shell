@@ -20,7 +20,7 @@ DIR* dir_ptr;
 char dir_name[MAX_PATH_LENGTH];
 char *dir_name_symlinks;
 char base_dir[MAX_PATH_LENGTH];
-
+char* last_dir; // This will store the last directory in the current path
 
 /********** - INPUT HANDLING - **********/
 const int MAX_TOKENS = 10;
@@ -39,6 +39,12 @@ const int MAX_HISTORY_LENGTH = 500;
 char history_buffer[MAX_HISTORY_LENGTH][MAX_COMMAND_LENGTH];
 int history_ptr = 0;
 
+char* getLastDirectory(const char* dir){
+    int len = strlen(dir);
+    if(len == 1) return (char*)dir;
+    for(int i=len-1;i>=0;i--) if(dir[i] == '/') return (char*)(dir+i+1);
+    return (char*)dir; //just for safety
+}
 
 void init(){
     gethostname(host_name, MAX_HOST_SIZE);
@@ -47,6 +53,7 @@ void init(){
     dir_ptr = opendir("/"); // open current directory;
     chdir("/");
     getcwd(dir_name, MAX_PATH_LENGTH);
+    last_dir = getLastDirectory(dir_name);
     // setenv("PWD", "/",1);
     // dir_name_symlinks = getenv("PWD");
     // strcpy(dir_name_symlinks, dir_name);
@@ -97,6 +104,7 @@ void _cd_2(char* dir){
     int result = chdir(dir);
     if(result != 0) {printf("cd: no such directory\n"); return;}
     getcwd(dir_name, MAX_PATH_LENGTH);
+    last_dir = getLastDirectory(dir_name);
     // dir_name_symlinks = getenv("PWD");
     // int slen = strlen(dir_name_symlinks);
     // if(dir_name_symlinks[slen - 1] != '/') {
@@ -257,7 +265,7 @@ int tokenize2(char str[MAX_COMMAND_LENGTH], char **buff){
 }
 
 int input(){
-    printf("%s %s$ ", dir_name,  getenv("USER"));
+    printf("%s %s$ ", last_dir,  getenv("USER"));
     gets(command);
     int cnt = tokenize(command, input_buffer);
     for(int i=cnt;i<MAX_TOKENS;i++){
