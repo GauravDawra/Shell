@@ -3,7 +3,7 @@
 ## Introduction
 This project implements a linux shell, with 10 commands. The project creates an executable image of the our shell. The shell can perform all the basic commands that are listed below. The shell also supports some of the command line arguments as shown below in the *commands* section. The shell prompts the user for the command input. The prompt message looks like this:
     `[current_working_directory] [user_name]$ `
-    For example: "/Users/gaurav/Projects gaurav$ "
+    For example: "Projects gaurav$ "
 
 ## Setup of the project
 To set up the project, follow the following commands.
@@ -71,8 +71,14 @@ You are done!!! This will setup the project for you. To run the shell program, t
 - ### `pwd`: an internal command
     This outputs the present working directory on the console. This outputs the absolute path of the directory our shell is currently pointing to - starting from the root('/'). 
 
+    Has the following command line options:
+    1. `-P`: This is the only option available with this command. This resolves all the system links references in the path of the current working directory. Thus, the output contains no system link references.
+
 - ### `cd [dirname]`: an internal command
     This changes the current working directory, pointed by the shell to [dirname]. Note that the [dirname] should be a valid directory name. We can provide the relative path of the directory from the current working directory, or an absolute path.
+
+    Has the following command line options:
+    1. `-P`: This is the only option available with this command. This resolves all the system links references in the path provided in the argument. Thus, the directory pointed to by our shell, after this command is executed, is the hard link of the directory we provided in the argument.
 
 - ### `exit`: an internal command
     This command just exits the shell.

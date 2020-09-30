@@ -18,7 +18,7 @@ char user_name[MAX_USER_SIZE];
 const int MAX_PATH_LENGTH = 1024;
 DIR* dir_ptr;
 char dir_name[MAX_PATH_LENGTH];
-char *dir_name_symlinks;
+char dir_name_symlinks[MAX_PATH_LENGTH];
 char base_dir[MAX_PATH_LENGTH];
 char* last_dir; // This will store the last directory in the current path
 
@@ -116,12 +116,15 @@ void _cd_2(char* dir){
 
 void _pwd(){
     // short GET_PHYSICAL_ADDRESS = 0;
+    // short GET_LOGICAL_ADDRESS = 0;
     // for(int i=0;i<input_cnt;i++){
     //     if(strcmp(input_buffer[i], "-P") == 0) 
     //         GET_PHYSICAL_ADDRESS = 1;
+    //     if(strcmp(input_buffer[i], "-L") == 0)
+    //         GET_LOGICAL_ADDRESS = 1;
     // }
-    // if(GET_PHYSICAL_ADDRESS) printf("%s\n", dir_name);
-    // else printf("%s\n", dir_name_symlinks);
+    // if(GET_LOGICAL_ADDRESS) printf("%s\n", dir_name_symlinks);
+    // else printf("%s\n", dir_name);
     printf("%s\n", dir_name);
 }
 
@@ -265,7 +268,7 @@ int tokenize2(char str[MAX_COMMAND_LENGTH], char **buff){
 }
 
 int input(){
-    printf("%s %s$ ", last_dir,  getenv("USER"));
+    printf("%s %s$ ", last_dir, getenv("USER"));
     gets(command);
     int cnt = tokenize(command, input_buffer);
     for(int i=cnt;i<MAX_TOKENS;i++){
