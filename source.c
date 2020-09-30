@@ -140,7 +140,7 @@ void _echo(char* str){
     if(PARSE_ESCAPE_CHARACTERS){
     // char sub_str[MAX_COMMAND_LENGTH];
     // printf("hhoho");
-    char* sub_str = (char*)malloc(len*sizeof(char));
+    char* sub_str = (char*)malloc(len * sizeof(char));
     // sub_str
     int ptr = 0;
 
