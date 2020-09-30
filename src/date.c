@@ -9,7 +9,7 @@ short UTC_TIME = 0;
 int main(int argc, char* argv[])
 {
     time_t t = time(NULL);
-    struct tm TM;// = *localtime(&t);
+    struct tm* TM;// = *localtime(&t);
 //   printf("now: %d-%02d-%02d %02d:%02d:%02d\n", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
     char* day[] = {
         "Sun", "Mon", "Tue", 
@@ -32,17 +32,24 @@ int main(int argc, char* argv[])
     if(UTC_TIME) TIME_TYPE = "UTC";
     
     if(!MODIFIED_FILE){
-        if(UTC_TIME) TM = *gmtime(&t);
-        else TM = *localtime(&t);
-        printf("%s %s %d %02d:%02d:%02d %s %d\n", day[TM.tm_wday], month[TM.tm_mon], TM.tm_mday, TM.tm_hour, TM.tm_min, TM.tm_sec, TIME_TYPE, 1900+TM.tm_year);
+        if(UTC_TIME) TM = gmtime(&t);
+        else TM = localtime(&t);
+        
+        if(TM == NULL) perror("date");
+        else printf("%s %s %d %02d:%02d:%02d %s %d\n", day[TM->tm_wday], month[TM->tm_mon], TM->tm_mday, TM->tm_hour, TM->tm_min, TM->tm_sec, TIME_TYPE, 1900+TM->tm_year);
     }
     else{
         struct stat attrib;
-        stat(argv[argc - 1], &attrib);
-        if(UTC_TIME) TM = *gmtime(&(attrib.st_mtime));
-        else TM = *localtime(&(attrib.st_mtime));
-        printf("%s %s %d %02d:%02d:%02d %s %d\n", day[TM.tm_wday], month[TM.tm_mon], TM.tm_mday, TM.tm_hour, TM.tm_min, TM.tm_sec, TIME_TYPE, 1900+TM.tm_year);
-    }
+        int res = stat(argv[argc - 1], &attrib);
+        if(res == -1) {
+            perror("date");
+            return 0;
+        }
+        if(UTC_TIME) TM = gmtime(&(attrib.st_mtime));
+        else TM = localtime(&(attrib.st_mtime));
+        if(TM == NULL) perror("date");
+        else printf("%s %s %d %02d:%02d:%02d %s %d\n", day[TM->tm_wday], month[TM->tm_mon], TM->tm_mday, TM->tm_hour, TM->tm_min, TM->tm_sec, TIME_TYPE, 1900+TM->tm_year);
+    } 
 
     return 0;
 }

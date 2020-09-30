@@ -32,7 +32,7 @@ int main(int argc, char* argv[]){
     }
 
     if(strcmp(argv[argc-1],".") == 0 || strcmp(argv[argc-1],"..") == 0){
-        printf("You cannot remove %s", argv[argc-1]);
+        printf("rm: You cannot remove %s", argv[argc-1]);
         return 0;
     }
     
@@ -53,7 +53,7 @@ int main(int argc, char* argv[]){
     }
     int del = remove(argv[argc-1]);
     if(del) {
-        printf("The file/directory is not deleted\n");
+        perror("rm");
     }
 
     return 0;

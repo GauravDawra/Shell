@@ -36,6 +36,6 @@ int main(int argc, char* argv[]){
         }
         closedir(d);
     } 
-    else printf("Error\n");
+    else perror("ls");
     return 0;
 }

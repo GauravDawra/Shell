@@ -29,7 +29,7 @@ int main(int argc, char* argv[]){
 
     FILE* fp = fopen(argv[argc-1], "r");
     if(fp == NULL){
-        printf("cat: File could not be opened\n");
+        perror("cat");
         return 0;
     }
     char str[MAX_LINE_LENGTH];

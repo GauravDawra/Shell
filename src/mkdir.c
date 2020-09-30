@@ -53,6 +53,7 @@ int main(int argc, char* argv[]){
         res = mkdir(dir, 0777);
         if(res == 0) output_directory_created(dir);
     }
-    if(res != 0) printf("mkdir: directory cannot be created\n");
+    if(res != 0) 
+        perror("mkdir");
     return 0;
 }
